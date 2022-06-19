@@ -52,10 +52,31 @@ passport.deserializeUser(User.deserializeUser());
 
 
 app.get("/", function(req, res){
+  /*
   Blog.find(function(err, posts){
     if (err) {
       console.log(err);
     } else {
+      res.render("home",{startingContent: homeStartingContent, posts: posts});
+    }
+  });
+*/
+  User.find(function(err, users) {
+    if (err) {
+      console.log(err);
+    } else {
+      const posts = [];
+      users.forEach(function(user){
+        user.blogs.forEach(function(blog){
+          posts.push({
+            userId: user._id,
+            author: user.name,
+            blogId: blog._id,
+            title: blog.title,
+            content: blog.content
+          });
+        });
+      });
       res.render("home",{startingContent: homeStartingContent, posts: posts});
     }
   });
@@ -77,13 +98,17 @@ app.get("/compose", function(req, res){
   }
 });
 
-app.get("/posts/:postId", function(req, res){
+app.get("/posts/:userId/:blogId", function(req, res){
   // console.log(search(req.params.title));
   //const requestedTitle = _.lowerCase(req.params.title);//lodash used
-  const requestedPostId = req.params.postId;
+  const requestedUserId = req.params.userId;
+  const requestedBlogId = req.params.blogId;
 
-  Blog.findOne({_id: requestedPostId}, function(err, post){
-    res.render("post", {post: post});
+  User.findOne({_id: requestedUserId}, function(err, user){
+    const post = user.blogs.filter(function(blog){
+      return blog._id !== requestedBlogId;
+    });
+    res.render("post", {post: post[0], author: user.name});
   });
 });
 
