@@ -22,8 +22,13 @@
               <label for="password">Password</label>
               <input type="password" class="form-control" name="password">
             </div>
-            <button type="submit" class="btn submit-btn"><%= pageName %></button>
+            <button type="submit" class="btn submit-btn"><strong><%= pageName %></strong></button>
           </form>
+
+          <% if (pageName === "Login") { %>
+            <p class="register-prompt">Don't have an account? <a href="/register"><strong>Sign Up</strong></a></p>
+          <% } %>
+
 
         </div>
       </div>

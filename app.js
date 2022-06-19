@@ -99,9 +99,31 @@ app.get("/register", function(req, res) {
   res.render("enter", {pageName: "Register"});
 });
 
+/*
 app.post("/login", function(req, res){
-  console.log(req.body);
+  const user = new User({
+    username: req.body.username,
+    password: req.body.password
+  });
+
+  req.login(user, function(err){
+    if (err) {
+      console.log(err);
+      res.redirect("/login");
+    } else {
+      passport.authenticate("local")(req, res, function(){
+        res.redirect("/compose");
+      });
+    }
+  });
 });
+*/
+
+app.post("/login",
+  passport.authenticate("local", { failureRedirect: "/login", failureMessage: true }),
+  function(req, res) {
+    res.redirect("/compose");
+  });
 
 app.post("/register", function(req, res){
   User.register({username: req.body.username}, req.body.password, function(err, user){

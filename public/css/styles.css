@@ -20,6 +20,10 @@
   color: #fff;
 }
 
+.register-prompt {
+  margin-top: 16px;
+}
+
 .footer-padding {
 	padding-bottom: 60px;
 }
