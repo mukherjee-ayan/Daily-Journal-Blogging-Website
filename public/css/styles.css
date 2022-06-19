@@ -24,6 +24,14 @@
   margin-top: 16px;
 }
 
+p a {
+  color: #1abc9c;
+}
+
+p a:hover {
+  color: #2E8B57;
+}
+
 .footer-padding {
 	padding-bottom: 60px;
 }
