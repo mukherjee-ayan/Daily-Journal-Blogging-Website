@@ -83,11 +83,11 @@ app.get("/", function(req, res){
 });
 
 app.get("/about", function(req, res){
-  res.render("about", {aboutContent: aboutContent});
+  res.render("info", {title: "About", content: aboutContent});
 });
 
 app.get("/contact", function(req, res){
-  res.render("contact", {contactContent: contactContent});
+  res.render("info", {title: "Contact", content: contactContent});
 });
 
 app.get("/compose", function(req, res){
