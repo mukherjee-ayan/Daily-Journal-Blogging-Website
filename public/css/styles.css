@@ -15,6 +15,11 @@
     color: #1abc9c !important;
 }
 
+.submit-btn {
+  background-color: #1abc9c;
+  color: #fff;
+}
+
 .footer-padding {
 	padding-bottom: 60px;
 }

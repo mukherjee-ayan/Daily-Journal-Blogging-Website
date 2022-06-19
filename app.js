@@ -1,10 +1,13 @@
 //jshint esversion:6
-
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const _ = require("lodash");
+const session = require("express-session");
+const passport = require("passport");
+const passportLocalMongoose = require("passport-local-mongoose");
 
 const homeStartingContent = "Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
 
@@ -16,13 +19,36 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
+app.use(session({
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 mongoose.connect('mongodb://localhost:27017/blogDB');
+
 const blogSchema = new mongoose.Schema({
   title: String,
   content: String
 });
-const Blog = mongoose.model("Blog", blogSchema);
+const Blog = mongoose.model("Blog", blogSchema); // To be removed after completion
+
+const userSchema = new mongoose.Schema({
+  email: String,
+  password: String,
+  blogs: [{
+    title: String,
+    content: String
+  }]
+});
+userSchema.plugin(passportLocalMongoose);
+const User = mongoose.model("User", userSchema);
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 app.get("/", function(req, res){
   Blog.find(function(err, posts){
@@ -61,6 +87,31 @@ app.post("/compose", function(req, res){
   post.save(function(err){
     if (!err) {
       res.redirect("/");
+    }
+  });
+});
+
+app.get("/login", function(req, res) {
+  res.render("enter", {pageName: "Login"});
+});
+
+app.get("/register", function(req, res) {
+  res.render("enter", {pageName: "Register"});
+});
+
+app.post("/login", function(req, res){
+  console.log(req.body);
+});
+
+app.post("/register", function(req, res){
+  User.register({username: req.body.username}, req.body.password, function(err, user){
+    if (err) {
+      console.log(err);
+      res.redirect("/register");
+    } else {
+      passport.authenticate("local")(req, res, function(){
+        res.redirect("/compose");
+      });
     }
   });
 });
