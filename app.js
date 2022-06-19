@@ -36,6 +36,7 @@ const blogSchema = new mongoose.Schema({
 const Blog = mongoose.model("Blog", blogSchema); // To be removed after completion
 
 const userSchema = new mongoose.Schema({
+  name: String,
   email: String,
   password: String,
   blogs: [{
@@ -149,7 +150,7 @@ app.post("/login",
   });
 
 app.post("/register", function(req, res){
-  User.register({username: req.body.username}, req.body.password, function(err, user){
+  User.register({name: req.body.name, username: req.body.username}, req.body.password, function(err, user){
     if (err) {
       console.log(err);
       res.redirect("/register");
