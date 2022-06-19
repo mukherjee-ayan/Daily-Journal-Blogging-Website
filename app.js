@@ -69,7 +69,11 @@ app.get("/contact", function(req, res){
 });
 
 app.get("/compose", function(req, res){
-  res.render("compose");
+  if (req.isAuthenticated()) {
+    res.render("compose");
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/posts/:postId", function(req, res){
@@ -83,10 +87,29 @@ app.get("/posts/:postId", function(req, res){
 });
 
 app.post("/compose", function(req, res){
-  const post = new Blog({title: req.body.postTitle, content: req.body.postBody});
-  post.save(function(err){
-    if (!err) {
-      res.redirect("/");
+  // const post = new Blog({title: req.body.postTitle, content: req.body.postBody});
+  // console.log(req.user);
+  // post.save(function(err){
+  //   if (!err) {
+  //     res.redirect("/");
+  //   }
+  // });
+  User.findById(req.user._id, function(err, foundUser){
+    if (err) {
+      console.log(err);
+    } else {
+      const post = {
+        title: req.body.postTitle,
+        content: req.body.postBody
+      };
+      foundUser.blogs.push(post);
+      foundUser.save(function(err){
+        if (err) {
+          console.log(err);
+        } else {
+          res.redirect("/");
+        }
+      });
     }
   });
 });
