@@ -180,7 +180,17 @@ app.post("/login",
     res.redirect("/compose");
   });
 
-app.post("/register", function(req, res){
+app.get("/logout", function(req, res) {
+  req.logout(function(err){
+    if (err) {
+      console.log(err);
+    } else {
+      res.redirect("/");
+    }
+  });
+});
+
+app.post("/register", function(req, res) {
   User.register({name: req.body.name, username: req.body.username}, req.body.password, function(err, user){
     if (err) {
       console.log(err);
