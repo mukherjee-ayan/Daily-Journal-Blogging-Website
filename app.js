@@ -185,7 +185,7 @@ app.get("/logout", function(req, res) {
     if (err) {
       console.log(err);
     } else {
-      res.redirect("/");
+      res.redirect("back");
     }
   });
 });
