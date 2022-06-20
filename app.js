@@ -29,11 +29,13 @@ app.use(passport.session());
 
 mongoose.connect('mongodb://localhost:27017/blogDB');
 
+/*
 const blogSchema = new mongoose.Schema({
   title: String,
   content: String
 });
-const Blog = mongoose.model("Blog", blogSchema); // To be removed after completion
+const Blog = mongoose.model("Blog", blogSchema);
+*/
 
 const userSchema = new mongoose.Schema({
   name: String,
@@ -61,6 +63,7 @@ app.get("/", function(req, res){
     }
   });
 */
+
   User.find(function(err, users) {
     if (err) {
       console.log(err);
@@ -77,22 +80,22 @@ app.get("/", function(req, res){
           });
         });
       });
-      res.render("home",{startingContent: homeStartingContent, posts: posts});
+      res.render("home", {headerType: req.isAuthenticated(), startingContent: homeStartingContent, posts: posts});
     }
   });
 });
 
 app.get("/about", function(req, res){
-  res.render("info", {pageTitle: "About", content: aboutContent});
+  res.render("info", {headerType: req.isAuthenticated(), pageTitle: "About", content: aboutContent});
 });
 
 app.get("/contact", function(req, res){
-  res.render("info", {pageTitle: "Contact", content: contactContent});
+  res.render("info", {headerType: req.isAuthenticated(), pageTitle: "Contact", content: contactContent});
 });
 
 app.get("/compose", function(req, res){
   if (req.isAuthenticated()) {
-    res.render("compose");
+    res.render("compose", {headerType: req.isAuthenticated()});
   } else {
     res.redirect("/login");
   }
@@ -108,18 +111,21 @@ app.get("/posts/:userId/:blogId", function(req, res){
     const post = user.blogs.filter(function(blog){
       return blog._id !== requestedBlogId;
     });
-    res.render("post", {post: post[0], author: user.name});
+    res.render("post", {headerType: req.isAuthenticated(), post: post[0], author: user.name});
   });
 });
 
 app.post("/compose", function(req, res){
-  // const post = new Blog({title: req.body.postTitle, content: req.body.postBody});
-  // console.log(req.user);
-  // post.save(function(err){
-  //   if (!err) {
-  //     res.redirect("/");
-  //   }
-  // });
+  /*
+  const post = new Blog({title: req.body.postTitle, content: req.body.postBody});
+  console.log(req.user);
+  post.save(function(err){
+    if (!err) {
+      res.redirect("/");
+    }
+  });
+*/
+
   User.findById(req.user._id, function(err, foundUser){
     if (err) {
       console.log(err);
@@ -141,11 +147,11 @@ app.post("/compose", function(req, res){
 });
 
 app.get("/login", function(req, res) {
-  res.render("enter", {pageName: "Login"});
+  res.render("enter", {headerType: false, pageName: "Login"});
 });
 
 app.get("/register", function(req, res) {
-  res.render("enter", {pageName: "Register"});
+  res.render("enter", {headerType: false, pageName: "Register"});
 });
 
 /*
@@ -191,11 +197,13 @@ app.listen(process.env.PORT || 3000, function() {
   console.log("Server is running");
 });
 
-// function search(key) {
-//   for (var i = 0; i < posts.length; i++) {
-//     if(posts[i].title === key){
-//       return "Match found!";
-//     }
-//   }
-//   return "Match not found!";
-// }
+/*
+function search(key) {
+  for (var i = 0; i < posts.length; i++) {
+    if(posts[i].title === key){
+      return "Match found!";
+    }
+  }
+  return "Match not found!";
+}
+*/
