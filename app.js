@@ -15,6 +15,8 @@ const aboutContent = "Hac habitasse platea dictumst vestibulum rhoncus est pelle
 
 const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rhoncus urna neque viverra justo nec ultrices. Arcu dui vivamus arcu felis bibendum. Consectetur adipiscing elit duis tristique. Risus viverra adipiscing at in tellus integer feugiat. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Consequat interdum varius sit amet mattis. Iaculis nunc sed augue lacus. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing elit. Pulvinar elementum integer enim neque. Ultrices gravida dictum fusce ut placerat orci nulla. Mauris in aliquam sem fringilla ut morbi tincidunt. Tortor posuere ac ut consequat semper viverra nam libero.";
 
+var redirectTo = "/";
+
 const app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -26,6 +28,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 mongoose.connect('mongodb://localhost:27017/blogDB');
 
@@ -52,6 +55,12 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use((req, res, next) => {
+  if (!["/login", "/register"].includes(req.originalUrl)) {
+    redirectTo = req.originalUrl;
+  }
+  next();
+});
 
 app.get("/", function(req, res){
   /*
@@ -175,9 +184,9 @@ app.post("/login", function(req, res){
 */
 
 app.post("/login",
-  passport.authenticate("local", { failureRedirect: "/login", failureMessage: true }),
+  passport.authenticate("local", {failureRedirect: "/login", failureMessage: true }),
   function(req, res) {
-    res.redirect("/compose");
+    res.redirect(redirectTo);
   });
 
 app.get("/logout", function(req, res) {
@@ -185,7 +194,7 @@ app.get("/logout", function(req, res) {
     if (err) {
       console.log(err);
     } else {
-      res.redirect("back");
+      res.redirect("back"); // Back to the route from where get method is called.
     }
   });
 });
@@ -197,7 +206,7 @@ app.post("/register", function(req, res) {
       res.redirect("/register");
     } else {
       passport.authenticate("local")(req, res, function(){
-        res.redirect("/compose");
+        res.redirect(redirectTo);
       });
     }
   });
