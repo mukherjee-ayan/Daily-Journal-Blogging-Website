@@ -110,15 +110,15 @@ app.get("/compose", function(req, res){
   }
 });
 
-app.get("/posts/:userId/:blogId", function(req, res){
+app.get("/posts/:userId/:title", function(req, res){
   // console.log(search(req.params.title));
-  //const requestedTitle = _.lowerCase(req.params.title);//lodash used
+  const requestedTitle = _.lowerCase(req.params.title);//lodash used
   const requestedUserId = req.params.userId;
-  const requestedBlogId = req.params.blogId;
+  // const requestedBlogId = req.params.blogId;
 
   User.findOne({_id: requestedUserId}, function(err, user){
     const post = user.blogs.filter(function(blog){
-      return blog._id !== requestedBlogId;
+      return _.lowerCase(blog.title) === requestedTitle;
     });
     res.render("post", {headerType: req.isAuthenticated(), post: post[0], author: user.name});
   });
