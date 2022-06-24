@@ -1,7 +1,8 @@
 <%- include("partials/header", {isAuthentcated: headerType}) %>
 
 <h1><%= post.title %></h1>
-<h4>By <%= author %></h4>
+<h3>By <%= author %></h3>
+<h5><%= post.dateOfCreation %></h5>
 <p><%= post.content %></p>
 
 <%- include("partials/footer") %>

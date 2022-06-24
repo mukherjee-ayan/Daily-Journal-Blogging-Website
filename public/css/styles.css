@@ -37,6 +37,14 @@ p a:hover {
   margin-bottom: 60px;
 }
 
+h1, h2 {
+  font-weight: bold;
+}
+
+h5 {
+  color: grey;
+}
+
 .footer {
   text-align: center;
   width: 100%;

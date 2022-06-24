@@ -46,7 +46,8 @@ const userSchema = new mongoose.Schema({
   password: String,
   blogs: [{
     title: String,
-    content: String
+    content: String,
+    dateOfCreation: Date
   }]
 });
 userSchema.plugin(passportLocalMongoose);
@@ -73,6 +74,15 @@ app.get("/", function(req, res){
   });
 */
 
+  function compare(a, b) {
+    if (a.dateOfCreation < b.dateOfCreation) {
+      return 1;
+    } else if (a.dateOfCreation > b.dateOfCreation) {
+      return -1;
+    }
+    return 0;
+  }
+
   User.find(function(err, users) {
     if (err) {
       console.log(err);
@@ -85,10 +95,12 @@ app.get("/", function(req, res){
             author: user.name,
             blogId: blog._id,
             title: blog.title,
-            content: blog.content
+            content: blog.content,
+            dateOfCreation: blog.dateOfCreation
           });
         });
       });
+      posts.sort(compare);
       res.render("home", {headerType: req.isAuthenticated(), startingContent: homeStartingContent, posts: posts});
     }
   });
@@ -141,7 +153,8 @@ app.post("/compose", function(req, res){
     } else {
       const post = {
         title: req.body.postTitle,
-        content: req.body.postBody
+        content: req.body.postBody,
+        dateOfCreation: new Date()
       };
       foundUser.blogs.push(post);
       foundUser.save(function(err){

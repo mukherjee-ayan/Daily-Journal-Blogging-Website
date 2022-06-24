@@ -1,15 +1,18 @@
 <%- include("partials/header", {isAuthentcated: headerType}) %>
 
-  <h1>Home</h1>
-  <p><%= startingContent %></p>
+<h1>Home</h1>
+<p><%= startingContent %></p>
 
-  <% posts.forEach(function(post){ %>
-    <h1><%= post.title %></h1>
-    <h4>By <%= post.author %></h4>
-    <p>
-      <%= post.content.substring(0,100) + " ..."%>
-      <a href="/posts/<%= post.userId %>/<%= post.title %>">Read More</a>
-    </p>
-  <% }); %>
+<% posts.forEach(function(post){ %>
+<div class="">
+  <h2><%= post.title %></h2>
+  <h3>By <%= post.author %></h3>
+  <h5><%= post.dateOfCreation %></h5>
+  <p>
+    <%= post.content.substring(0,100) + " ..."%>
+    <a href="/posts/<%= post.userId %>/<%= post.title %>">Read More</a>
+  </p>
+</div>
+<% }); %>
 
 <%- include("partials/footer") %>
