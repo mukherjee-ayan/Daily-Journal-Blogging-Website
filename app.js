@@ -42,7 +42,7 @@ const Blog = mongoose.model("Blog", blogSchema);
 
 const userSchema = new mongoose.Schema({
   name: String,
-  email: String,
+  username: String,
   password: String,
   blogs: [{
     title: String,
@@ -117,6 +117,16 @@ app.get("/contact", function(req, res){
 app.get("/compose", function(req, res){
   if (req.isAuthenticated()) {
     res.render("compose", {headerType: req.isAuthenticated()});
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.get("/account", function(req, res){
+  if (req.isAuthenticated()) {
+    User.findOne({_id: req.user._id}, function(err, foundUser){
+      res.render("account", {headerType: true, user: foundUser})
+    });
   } else {
     res.redirect("/login");
   }

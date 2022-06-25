@@ -18,7 +18,8 @@
           <li id="home"><a href="/">HOME</a></li>
           <li id="about"><a href="/about">ABOUT US</a></li>
           <li id="compose"><a href="/compose">COMPOSE</a></li>
-          <% if (isAuthentcated) { %>
+          <% if (isAuthenticated) { %>
+            <li id="account"><a href="/account">ACCOUNT</a></li>
             <li id="logout"><a href="/logout">LOGOUT</a></li>
           <% } else { %>
             <li id="login"><a href="/login">LOGIN</a></li>
