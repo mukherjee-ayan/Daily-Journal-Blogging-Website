@@ -11,9 +11,11 @@
   <h5><%= post.dateOfCreation %></h5>
 
   <p>
-    <%= post.content.substring(0,100) + " ..."%>
+    <%= post.content.substring(0,250) + " ..."%>
     <a href="/posts/<%= user._id %>/<%= post.title %>">Read More</a>
   </p>
+
+  <a href="/delete/<%= user._id %>/<%= post._id %>" class="btn btn-primary" role="button">Delete</a>
 
 </div>
 

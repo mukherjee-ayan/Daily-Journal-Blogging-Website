@@ -146,6 +146,17 @@ app.get("/posts/:userId/:title", function(req, res){
   });
 });
 
+app.get("/delete/:userId/:titleId", function(req, res){
+  User.updateOne(
+    {_id: req.params.userId},
+    {$pull: {blogs: {_id: mongoose.Types.ObjectId(req.params.titleId)}}}, //String to ObjectId
+    function(err){
+      console.log(err);
+    }
+  );
+  res.redirect("/account");
+});
+
 app.post("/compose", function(req, res){
   /*
   const post = new Blog({title: req.body.postTitle, content: req.body.postBody});
