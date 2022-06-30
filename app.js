@@ -146,15 +146,20 @@ app.get("/posts/:userId/:title", function(req, res){
   });
 });
 
-app.get("/delete/:userId/:titleId", function(req, res){
-  User.updateOne(
-    {_id: req.params.userId},
-    {$pull: {blogs: {_id: mongoose.Types.ObjectId(req.params.titleId)}}}, //String to ObjectId
-    function(err){
-      console.log(err);
-    }
-  );
-  res.redirect("/account");
+app.get("/delete/:titleId", function(req, res){
+  if (req.isAuthenticated()) {
+    User.updateOne(
+      {_id: req.user._id},
+      {$pull: {blogs: {_id: mongoose.Types.ObjectId(req.params.titleId)}}}, //String to ObjectId
+      function(err){
+        console.log(err);
+      }
+    );
+    res.redirect("/account");
+  } else {
+    res.redirect("/login");
+  }
+
 });
 
 app.post("/compose", function(req, res){
