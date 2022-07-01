@@ -159,7 +159,25 @@ app.get("/delete/:titleId", function(req, res){
   } else {
     res.redirect("/login");
   }
+});
 
+app.get("/edit/:titleId", function(req, res){
+  if (req.isAuthenticated()) {
+    User.findOne(
+      {_id: req.user._id},
+      {blogs: {$elemMatch: {_id: mongoose.Types.ObjectId(req.params.titleId)}}},
+      function(err, foundData){
+        if (err) {
+          console.log(err);
+        } else {
+          const post = foundData.blogs[0];
+          res.render("edit", {headerType: true, post: post});
+        }
+      }
+    );
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.post("/compose", function(req, res){
