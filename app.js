@@ -180,6 +180,28 @@ app.get("/edit/:titleId", function(req, res){
   }
 });
 
+app.post("/edit/:titleId", function(req, res){
+  if (req.isAuthenticated()) {
+    User.updateOne(
+      {_id: req.user._id, blogs: {$elemMatch: {_id: mongoose.Types.ObjectId(req.params.titleId)}}},
+      {$set: {
+        "blogs.$.title": req.body.postTitle,
+        "blogs.$.content": req.body.postBody,
+        "blogs.$.dateOfCreation": new Date()
+      }},
+      function(err){
+        if (err) {
+          console.log(err);
+        } else {
+          res.redirect("/account");
+        }
+      }
+    );
+  } else {
+    res.redirect("/login");
+  }
+});
+
 app.post("/compose", function(req, res){
   /*
   const post = new Blog({title: req.body.postTitle, content: req.body.postBody});
