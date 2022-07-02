@@ -182,21 +182,26 @@ app.get("/edit/:titleId", function(req, res){
 
 app.post("/edit/:titleId", function(req, res){
   if (req.isAuthenticated()) {
-    User.updateOne(
-      {_id: req.user._id, blogs: {$elemMatch: {_id: mongoose.Types.ObjectId(req.params.titleId)}}},
-      {$set: {
-        "blogs.$.title": req.body.postTitle,
-        "blogs.$.content": req.body.postBody,
-        "blogs.$.dateOfCreation": new Date()
-      }},
-      function(err){
-        if (err) {
-          console.log(err);
-        } else {
-          res.redirect("/account");
+    const titleId = mongoose.Types.ObjectId(req.params.titleId);
+    if (req.body.postTitle && req.body.postBody) {
+      User.updateOne(
+        {_id: req.user._id, blogs: {$elemMatch: {_id: titleId}}},
+        {$set: {
+          "blogs.$.title": req.body.postTitle,
+          "blogs.$.content": req.body.postBody,
+          "blogs.$.dateOfCreation": new Date()
+        }},
+        function(err){
+          if (err) {
+            console.log(err);
+          } else {
+            res.redirect("/account");
+          }
         }
-      }
-    );
+      );
+    } else {
+      res.redirect("/edit/" + titleId);
+    }
   } else {
     res.redirect("/login");
   }
@@ -213,25 +218,33 @@ app.post("/compose", function(req, res){
   });
 */
 
-  User.findById(req.user._id, function(err, foundUser){
-    if (err) {
-      console.log(err);
-    } else {
-      const post = {
-        title: req.body.postTitle,
-        content: req.body.postBody,
-        dateOfCreation: new Date()
-      };
-      foundUser.blogs.push(post);
-      foundUser.save(function(err){
+  if (req.isAuthenticated()) {
+    if (req.body.postTitle && req.body.postBody) {
+      User.findById(req.user._id, function(err, foundUser){
         if (err) {
           console.log(err);
         } else {
-          res.redirect("/");
+          const post = {
+            title: req.body.postTitle,
+            content: req.body.postBody,
+            dateOfCreation: new Date()
+          };
+          foundUser.blogs.push(post);
+          foundUser.save(function(err){
+            if (err) {
+              console.log(err);
+            } else {
+              res.redirect("/");
+            }
+          });
         }
       });
+    } else {
+      res.redirect("/compose");
     }
-  });
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/login", function(req, res) {
