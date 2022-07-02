@@ -152,10 +152,13 @@ app.get("/delete/:titleId", function(req, res){
       {_id: req.user._id},
       {$pull: {blogs: {_id: mongoose.Types.ObjectId(req.params.titleId)}}}, //String to ObjectId
       function(err){
-        console.log(err);
+        if (err) {
+          console.log(err);
+        } else {
+          res.redirect("/account");
+        }
       }
     );
-    res.redirect("/account");
   } else {
     res.redirect("/login");
   }
@@ -248,11 +251,19 @@ app.post("/compose", function(req, res){
 });
 
 app.get("/login", function(req, res) {
-  res.render("enter", {headerType: false, pageName: "Login"});
+  if (req.isAuthenticated()) {
+    res.redirect("/");
+  } else {
+    res.render("enter", {headerType: false, pageName: "Login"});
+  }
 });
 
 app.get("/register", function(req, res) {
-  res.render("enter", {headerType: false, pageName: "Register"});
+  if (req.isAuthenticated()) {
+    res.redirect("/");
+  } else {
+    res.render("enter", {headerType: false, pageName: "Register"});
+  }
 });
 
 /*

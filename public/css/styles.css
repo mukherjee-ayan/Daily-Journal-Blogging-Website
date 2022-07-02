@@ -20,6 +20,10 @@
   color: #fff;
 }
 
+.margin-right {
+  margin-right: 10px;
+}
+
 .register-prompt {
   margin-top: 16px;
 }
