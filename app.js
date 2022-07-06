@@ -29,8 +29,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+const username = encodeURIComponent(process.env.DB_USER);
+const password = encodeURIComponent(process.env.DB_PASS);
 
-mongoose.connect('mongodb://localhost:27017/blogDB');
+mongoose.connect("mongodb+srv://"+ username + ":" + password + "@cluster0.frp4d.mongodb.net/?retryWrites=true&w=majority");
 
 /*
 const blogSchema = new mongoose.Schema({
