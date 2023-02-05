@@ -4,7 +4,7 @@
 
 <h3>By <%= author %></h3>
 
-<h5><%= post.dateOfCreation %></h5>
+<h5><%= "Published on " + post.dateOfCreation.toLocaleString() + " IST" %></h5>
 
 <p><%= post.content %></p>
 
